@@ -1,0 +1,88 @@
+<html>
+<head>
+  <title>Zillabyte Travelling Salesman</title>
+  
+  <link href="tsp.css" rel="stylesheet" type="text/css">
+  
+  <!-- Vendor JS Files -->
+  <script src="vendor/jquery.min.js"></script>
+  <script src="vendor/d3.v2.js"></script>
+  <script src="vendor/underscore.js"></script>
+  
+  <!-- Stuff to get the TSP working -->
+  <script src="harness.js"></script>
+  <script src="random_graph_builder.js"></script>
+  <script src="renderer.js"></script>
+  
+  <!-- Algorithms -->
+  <script src="greedy_salesman.js"></script>
+  <script src="sequential_salesman.js"></script>
+  
+</head>
+<body>
+  
+  <!-- 
+    Welcome, fellow hacker. You may git-clone this puzzle from: http://github.com/zillabyte/puzzles
+    Happy coding, and may the odds be ever in your favor. 
+  -->
+  
+  <div id="graph"></div>
+  
+  <div id="info">
+    <h1>Zillabyte</h1>
+    <p>
+      The Travelling Salesman Problem (TSP) tries to find the shortest path through a given graph, touching every point and returning to the starting position.
+      <br/>
+      <br/>
+      This is an NP-hard problem, and finding the best solution efficiently is one of the great challenges of Computer Science.
+      <br/>
+      <br/>
+      At Zillabyte, we like hard problems.  We also like helping sales people.  Can you implement a better solution to the TSP than we have here? If so, email your implementation (or a link) to <a href="mailto:jobs@zillabyte.com">jobs@zillabyte.com</a>
+      
+    </p>
+  </div>
+  
+  <script>
+    
+    
+    // Initialize
+    var renderer = new Renderer("#graph");
+    var graph_builder = new RandomGraphBuilder();
+    var graph = graph_builder.build_graph();
+    var harness = new Harness();
+    var start_point_id = "pt_0";
+    var your_score = 999999999;
+    var greedy_score = 999999999;
+    
+    
+    // Render the graph
+    renderer.set_graph(graph);
+    
+    
+    // Our baseline implementation
+    var greedy_salesman = new GreedySalesman()
+    var greedy_plan = harness.run_algorithm(graph, start_point_id, greedy_salesman);
+    greedy_score = harness.compute_plan_cost(graph, greedy_plan);    
+    window.setTimeout(function() {renderer.start_plan(greedy_plan, "player_one");}, 2500)
+    console.log("*** Greedy Algorithm Total Distance: " + String(greedy_score));
+    
+    
+    // Your implementation. Uncomment to see a demonstration:
+    /*
+    var your_salesman = new SequentialSalesman();  // <-- REPLACE ME
+    var your_plan = harness.run_algorithm(graph, start_point_id, your_salesman);
+    your_score = harness.compute_plan_cost(graph, your_plan);
+    window.setTimeout(function() {renderer.start_plan(your_plan, "player_two");}, 2500)
+    console.log("*** YOUR Algorithm Total Distance: " + String(your_score));
+    */
+
+    
+    // Congrats? 
+    if (your_score < greedy_score) {
+      console.log("*** BOOM! Nice job. You defeated our implementation. You should email jobs@zillabyte.com RIGHT NOW.  A world of glory awaits you.");
+    }
+    
+    
+  </script>
+</body>
+</html>
