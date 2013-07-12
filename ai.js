@@ -144,21 +144,27 @@ function AISalesman() {
 
     var target = this.getGreedyScore(graphCopy,start_point_id);
     console.log("Target to beat: "+target);
+    var MAXTRIES = graph.points.length*graph.points.length*graph.points.length;
 
     this.init_graph(graph);
     var myRandomPlanSucceeded = false;
     var numTries = 0;
+    var smarterPlan = [];
     while (myRandomPlanSucceeded == false) {
+       numTries += 1;
        try {
            smarterPlan = this.makeRandomPath (graph, start_point_id);
-           numTries += 1;
            var myScore = harness.compute_plan_cost(graph, smarterPlan);
            
-           if (myScore < target)
+           if (myScore < target) {
                myRandomPlanSucceeded = true;
+               console.log(numTries);
+           }
        } catch (err) {
-           if (numTries > 3000)
-               break;
+           if (numTries > MAXTRIES) {
+               console.log ("I give up");
+               return [];
+           }
            //console.log("Oops "+err );
        }
     }
