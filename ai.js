@@ -99,9 +99,13 @@ function AISalesman() {
             this.randomVisited[lastPoint.id] = true;
         } else {
             //console.log("Dead end");
-            break;
+            //break;
+            var newPoint = this.get_closest_unvisited_point(lastPoint);
+            console.log("Went to "+newpoint.id+" from last "+lastPoint.id);
+            randomPath.push(newPoint);
         }
     }
+
 
     // Go back to the start
     last_point = randomPath [randomPath.length -1];
@@ -224,7 +228,7 @@ function AISalesman() {
     while(queue.length > 0) {
       var point = queue.shift();
       if (processed[point.id]) continue;
-      if (!self.visited[point.id]) {
+      if (!self.randomVisited[point.id]) {
         var this_dist = self.get_dist(start_point, point);
         if (this_dist < closest_dist) {
           closest_dist = this_dist;
