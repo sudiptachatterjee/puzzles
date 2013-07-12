@@ -47,6 +47,7 @@ function AISalesman() {
     var self = this;
     var closest_point = null;
     var the_hood = this.get_surrounding_points(my_point.id);
+    var orig_hood_len = the_hood.length;
 
     while(the_hood.length >0) {
       var randomIndex = Math.floor(Math.random()*the_hood.length);
@@ -57,6 +58,8 @@ function AISalesman() {
     }
 
     // If we are here, everything around is taken
+    //console.log("orig_hood len" + orig_hood_len);
+    //console.log("my point" + my_point.id);
     return my_point;
   }
   
@@ -101,6 +104,7 @@ function AISalesman() {
     }
 
     // Go back to the start
+    last_point = randomPath [randomPath.length -1];
     path = this.get_path_to_point(last_point, start_point);
     randomPath = randomPath.concat(path)
 
