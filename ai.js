@@ -47,11 +47,11 @@ function AISalesman() {
     var self = this;
     var closest_point = null;
     var the_hood = this.get_surrounding_points(my_point.id);
-    var max_checks = 10;
-    var checks = 0;
 
     while(the_hood.length >0) {
-      var point = the_hood.shift();
+      var randomIndex = Math.floor(Math.random()*the_hood.length);
+      var point = the_hood.splice(randomIndex, 1)[0];
+      //var point = the_hood.shift();
       if (!self.randomVisited[point.id]) 
           return point;
     }
@@ -95,7 +95,7 @@ function AISalesman() {
             randomPath.push(randomNeighbor);
             this.randomVisited[lastPoint.id] = true;
         } else {
-            console.log("Dead end");
+            //console.log("Dead end");
             break;
         }
     }
@@ -116,13 +116,45 @@ function AISalesman() {
         final_ary.push(a[i]);
       }
     }
-    console.log ("Random path is "+final_ary);
+    //console.log ("Random path is "+final_ary);
     return final_ary;
   }
 
+  this.getGreedyScore = function(graph,start_point_id) {
+    // Our baseline implementation
+    var greedy_salesman = new GreedySalesman()
+    var greedy_plan = harness.run_algorithm(graph, start_point_id, greedy_salesman);
+    greedy_score = harness.compute_plan_cost(graph, greedy_plan);    
+
+    return greedy_score;
+
+  }
+
   this.compute_plan = function(graph, start_point_id) {
+
+    var graphCopy = graph;
+
+    var target = this.getGreedyScore(graphCopy,start_point_id);
+    console.log("Target to beat: "+target);
+
     this.init_graph(graph);
-    return this.makeRandomPath(graph,start_point_id);
+    var myRandomPlanSucceeded = false;
+    var numTries = 0;
+    while (myRandomPlanSucceeded == false) {
+       try {
+           smarterPlan = this.makeRandomPath (graph, start_point_id);
+           numTries += 1;
+           var myScore = harness.compute_plan_cost(graph, smarterPlan);
+           
+           if (myScore < target)
+               myRandomPlanSucceeded = true;
+       } catch (err) {
+           if (numTries > 3000)
+               break;
+           //console.log("Oops "+err );
+       }
+    }
+    return smarterPlan;
   }
 /*
   this.compute_plan = function(graph, start_point_id) {
