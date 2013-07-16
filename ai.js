@@ -138,6 +138,29 @@ function AISalesman() {
 
   }
 
+  // Population of all random plans to apply genetic algorithms to
+  this.getFittestPlan = function(planPopulation) {
+      var fittestPlan = planPopulation[0];
+      var bestIndex = 0;
+      var bestPlanCost = harness.compute_plan_cost(fittestPlan);
+      for (i=1; i<planPopulation.length; i++) {
+          thisPlanCost = harness.compute_plan_cost(planPopulation[i]);
+          if (thisPlanCost < bestPlanCost) {
+              bestPlanCost = thisPlanCost;
+              bestIndex = i;
+              fittestPlan = planPopulation[i]
+          }
+      }
+  }
+
+  // Genetic algorithm - evolve new population
+  this.mutationRate = 0.015;
+  this.tournamentSize = 4;
+  this.keepTheBest = true;
+  this.evolve = function(graph, targetCost) {
+
+  }
+
   this.compute_plan = function(graph, start_point_id) {
 
     var graphCopy = graph;
